@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% load tags %}
+{% block title %}微博详情{% endblock %}
+{% block content %}
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="exampleModalLabel">微博评论发布</h4>
+      </div>
+      <div class="modal-body">
+        <form action="comment/" method="post">{% csrf_token %}
+            <div class="form-group">
+                <label for="message-text" class="control-label">评论:</label>
+                <textarea class="form-control" id="message-text" name="content"></textarea>
+            </div>
+            <input name="parent_id" class="hidden"/>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="submit" class="btn btn-primary">确定</button>
+            </div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+
+<div class="panel panel-info col-sm-6 col-md-offset-3">
+  <div class="panel-heading">
+    {{ obj.name }}
+  </div>
+    <div class="panel-body">
+        <div class="row">
+            <b>  {{ obj.summary }}</b>
+        </div>
+        <hr>
+        <div class="row">
+            {{ obj.content }}
+        </div>
+        <div class=" row panel-footer pull-right">作者：{{ obj.user.name }}</div>
+        <hr>
+        <div class="row">{% build_create_comment comment_list %}</div>
+        <div class=" row panel-footer pull-right">
+            {% if request.session.is_login %}
+            <button  type="button" class="btn btn-default"
+            name="comment_reply" data-toggle="modal" data-target="#exampleModal" data-comment="微博评论">评论</button>
+            {% else %}
+                <a name="logout" href="/login/">登录后可评论和回复信息</a>
+            {% endif %}
+
+        </div>
+        <hr>
+    </div>
+
+
+</div>
+{% endblock %}
+{% block js %}
+    <script>
+        $(function () {
+            bindReply;
+
+            binlogin();
+        })
+        function bindReply() {
+            $('.panel-body').on('click','button[name="comment_reply"]',function () {
+                var parend_id = $(this).attr('id');
+                $('.modal input[name="parent_id"]').val(parend_id);
+
+            })
+        }
+
+        function binlogin() {
+            if ($('.panel-body a[name="logout"]').length > 0){
+
+                $('.panel-body button[ data-comment="微博回复"]').addClass('hidden');
+            }
+            else {
+                return true;
+            }
+        }
+
+
+
+        $('#exampleModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget); // Button that triggered the modal
+            var recipient = button.data('comment'); // Extract info from data-* attributes
+            var modal = $(this);
+            modal.find('.modal-title').text(recipient);
+            modal.find('textarea[name="content"]').val();
+            })
+
+
+    </script>
+{% endblock %}

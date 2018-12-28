@@ -1,0 +1,68 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+        {% block title %}
+            base
+        {% endblock %}
+    </title>
+    <!--Bootstrop -->
+    <link href="{% static 'bootstrap-3.3.7-dist/css/bootstrap.min.css' %}" rel="stylesheet">
+        <link type="text/css" rel="styleSheet"  href="/static/css/home.css" />
+ {% block css %}{% endblock %}
+</head>
+<body>
+{% block body %}
+{% endblock %}
+<nav class="navbar navbar-default fix-top">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#my-nav" aria-expanded="false">
+        <span class="sr-only">切换导航条</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">首页</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="my-nav">
+      <ul class="nav navbar-nav navbar-right">
+          {% if request.session.is_login %}
+              <li><a href="#">当前在线：{{ request.session.user_name }}</a> </li>
+              <li><a href="/logout/">登出</a></li>
+          {% else %}
+        <li><a href="/login">登录</a></li>
+        <li><a href="/register/">注册</a></li>
+          {% endif %}
+        {% if request.session.is_login %}
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">下拉菜单 <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="/autoplat/wo/">联通云</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a href="/autoplat/tianyi/">电信云</a></li>
+              <li role="separator" class="divider"></li>
+              <li><a href="/autoplat/AWS/">AWS云</a></li>
+          </ul>
+        </li>
+        {% endif %}
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+{% block content %}{% endblock %}
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="{% static 'bootstrap-3.3.7-dist/js/bootstrap.min.js' %}"></script>
+    {% block js %}
+    {% endblock %}
+</body>
+</html>
